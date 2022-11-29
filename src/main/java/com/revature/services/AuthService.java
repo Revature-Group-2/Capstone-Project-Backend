@@ -1,5 +1,7 @@
 package com.revature.services;
 
+import com.revature.exceptions.EmailReservedException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.User;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,16 @@ public class AuthService {
         return userService.findByCredentials(email, password);
     }
 
-    public User register(User user) {
+    public User login(String login, String password) throws UserNotFoundException {
+        Optional<User> optional = findByCredentials(login, password);
+
+        if(!optional.isPresent()) 
+            throw new UserNotFoundException("A user with such credentials has not been found.");
+
+        return optional.get();
+    }
+
+    public User register(User user) throws EmailReservedException {
         return userService.save(user);
     }
 }
