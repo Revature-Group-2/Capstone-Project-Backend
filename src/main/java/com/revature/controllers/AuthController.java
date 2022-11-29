@@ -2,14 +2,16 @@ package com.revature.controllers;
 
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
+import com.revature.exceptions.EmailReservedException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.User;
 import com.revature.services.AuthService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -23,16 +25,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-        Optional<User> optional = authService.findByCredentials(loginRequest.getEmail(), loginRequest.getPassword());
+    public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+        try {
+            User user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            session.setAttribute("user", user);
 
-        if(!optional.isPresent()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        session.setAttribute("user", optional.get());
-
-        return ResponseEntity.ok(optional.get());
     }
 
     @PostMapping("/logout")
@@ -43,13 +44,18 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest registerRequest) {
-        User created = new User(0,
-                registerRequest.getEmail(),
-                registerRequest.getPassword(),
-                registerRequest.getFirstName(),
-                registerRequest.getLastName());
+    public ResponseEntity<Object> register(@RequestBody RegisterRequest registerRequest) {
+        try {
+            User created = authService.register(new User(0,
+                    registerRequest.getEmail(),
+                    registerRequest.getPassword(),
+                    registerRequest.getFirstName(),
+                    registerRequest.getLastName())
+            );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(created));
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (EmailReservedException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
