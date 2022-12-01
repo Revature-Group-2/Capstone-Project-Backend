@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+import com.revature.annotations.Authorized;
 import com.revature.dtos.LoginRequest;
 import com.revature.dtos.RegisterRequest;
 import com.revature.exceptions.EmailReservedException;
@@ -7,6 +8,7 @@ import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.User;
 import com.revature.services.AuthService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +17,11 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = {"http://localhost:4200","http://p3fev2.s3-website-us-west-1.amazonaws.com/"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000","http://ec2-52-33-155-232.us-west-2.compute.amazonaws.com:4200", "http://52.33.155.232:4200"}, allowCredentials = "true")
 public class AuthController {
 
-    private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
@@ -57,5 +56,12 @@ public class AuthController {
         } catch (EmailReservedException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    
+    @Authorized
+    @GetMapping("/restore-session")
+    public ResponseEntity<Object> restoreSession(HttpSession session) {
+        return ResponseEntity.ok().body(session.getAttribute("user"));
     }
 }
