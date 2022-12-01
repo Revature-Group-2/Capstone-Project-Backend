@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = {"http://localhost:4200","http://p3fev2.s3-website-us-west-1.amazonaws.com/"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:4200","http://52.37.182.192:4200"}, allowCredentials = "true")
 public class AuthController {
 
     private final AuthService authService;

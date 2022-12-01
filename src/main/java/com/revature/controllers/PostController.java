@@ -2,6 +2,8 @@ package com.revature.controllers;
 
 import java.util.List;
 
+import com.revature.utils.ProfanityFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,13 +18,16 @@ import com.revature.services.PostService;
 
 @RestController
 @RequestMapping("/post")
-@CrossOrigin(origins = {"http://localhost:4200","http://p3fev2.s3-website-us-west-1.amazonaws.com/"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:4200","http://52.37.182.192:4200"}, allowCredentials = "true")
 public class PostController {
 
 	private final PostService postService;
 
-    public PostController(PostService postService) {
+    private final ProfanityFilter profanityFilter;
+
+    public PostController(PostService postService, ProfanityFilter profanityFilter) {
         this.postService = postService;
+        this.profanityFilter = profanityFilter;
     }
     
     @Authorized
@@ -33,7 +38,10 @@ public class PostController {
     
     @Authorized
     @PutMapping
-    public ResponseEntity<Post> upsertPost(@RequestBody Post post) {
+    public ResponseEntity<?> upsertPost(@RequestBody Post post) {
+        if (profanityFilter.hasProfanity(post.getText())){
+            return ResponseEntity.badRequest().body("Profanity not allowed!");
+        }
     	return ResponseEntity.ok(this.postService.upsert(post));
     }
 }
