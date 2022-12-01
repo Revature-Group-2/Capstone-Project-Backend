@@ -13,7 +13,7 @@ public class ProfanityFilter {
         ));
         String[] textArr = text.split(" ");
         for (String word: textArr) {
-            if (wordlist.contains(word)) {
+            if (wordlist.contains(word.toLowerCase())) {
                 return true;
             }
         }
