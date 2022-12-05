@@ -1,9 +1,10 @@
 package com.revature.controllers;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,10 +27,10 @@ public class PostControllerUnitTest {
     @MockBean
     private PostService postService;
 
-    String jsonMockPut;
+    static String jsonMockPut;
     
-    @BeforeEach
-    public void setupMockPutJson(){
+    @BeforeAll
+    public static void setupMockPutJson(){
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append("{\"id\":0,");
         jsonBuilder.append("\"text\":\"\",");
@@ -41,16 +42,18 @@ public class PostControllerUnitTest {
             jsonBuilder.append("\"password\":\"\",");
             jsonBuilder.append("\"firstName\":\"\",");
             jsonBuilder.append("\"lastName\":\"\"");
-            jsonBuilder.append("}}");
-            jsonMockPut = jsonBuilder.toString();
+        jsonBuilder.append("}}");
+        jsonMockPut = jsonBuilder.toString();
     }
 
     @Test
     public void getPostCallsPostServiceGetAll() {
         try {
             this.mockMvc.perform(get("/post"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
         }
-        catch (Exception e) {}
         verify(postService).getAll();
     }
     
@@ -59,12 +62,14 @@ public class PostControllerUnitTest {
         try {
             this.mockMvc.perform(get("/post"))
             .andExpect(status().isOk());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
         }
-        catch (Exception e) {}
     }
 
     @Test
-    public void PutPostCallsPostServiceUpsert() {
+    public void putPostCallsPostServiceUpsert() {
 
         try {
             this.mockMvc.perform(
@@ -72,9 +77,11 @@ public class PostControllerUnitTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
-                .content(jsonMockPut.toString()));
+                .content(jsonMockPut));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
         }
-        catch (Exception e) {}
         verify(postService).upsert(any(Post.class));
     }
 
@@ -90,8 +97,10 @@ public class PostControllerUnitTest {
                 .content(jsonMockPut.toString()))
                     .andExpect(status().isOk());
                 
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
         }
-        catch (Exception e) {}
     }
 
     @Test
@@ -106,7 +115,9 @@ public class PostControllerUnitTest {
                 .content("bad json"))
                     .andExpect(status().isBadRequest());
                 
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
         }
-        catch (Exception e) {}
     }
 }
