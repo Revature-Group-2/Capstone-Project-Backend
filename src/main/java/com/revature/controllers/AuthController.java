@@ -28,6 +28,7 @@ public class AuthController {
     public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         try {
             User user = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
+
             session.setAttribute("user", user);
 
             return ResponseEntity.ok(user);
