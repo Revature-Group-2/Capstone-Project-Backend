@@ -7,6 +7,7 @@ import com.revature.exceptions.EmailReservedException;
 import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.User;
 import com.revature.services.AuthService;
+import com.revature.services.ProfileService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,9 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private ProfileService profileService;
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
@@ -51,6 +55,8 @@ public class AuthController {
                     registerRequest.getFirstName(),
                     registerRequest.getLastName())
             );
+
+            profileService.registerProfile(created);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (EmailReservedException e) {
