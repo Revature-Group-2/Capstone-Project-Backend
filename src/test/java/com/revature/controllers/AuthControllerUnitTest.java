@@ -1,9 +1,15 @@
 package com.revature.controllers;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -16,30 +22,38 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.revature.exceptions.EmailReservedException;
 import com.revature.models.User;
 import com.revature.services.AuthService;
+import com.revature.services.ProfileService;
 
-@WebMvcTest(AuthController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AuthControllerUnitTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private AuthService authService;
+
+    @Mock
+    private ProfileService profileService;
+
+    @InjectMocks
+    AuthController authController;
+
+    private MockMvc mockMvc;
 
     static String jsonLogin = "{\"email\":\"\",\"password\":\"\"}";
     static String jsonRegister = "{\"id\":\"0\",\"email\":\"\",\"password\":\"\",\"firstName\":\"\",\"lastName\":\"\"}";
 
-    @BeforeAll
-    public static void setupJsonLogin(){
-
+    @BeforeEach
+    public void setup(){
+        MockitoAnnotations.openMocks(authController);
+        this.mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
     }
     
     @Test
