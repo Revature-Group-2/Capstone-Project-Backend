@@ -4,6 +4,13 @@ INSERT INTO users (id, email, password, first_name, last_name) VALUES (
     'password',
     'Test',
     'User'
+), 
+(
+    DEFAULT,
+    'q@q',
+    '111111',
+    'Test',
+    'User'
 );
 
 INSERT INTO posts (id, text, image_url,vote_count, author_id) VALUES (
@@ -19,4 +26,9 @@ INSERT INTO posts (id, text, image_url,vote_count, author_id) VALUES (
     '',
     0,
     1
-); 
+), (
+    DEFAULT,
+    'The classic',
+    'https://i.imgur.com/fhgzVEt.jpeg',
+    1
+);

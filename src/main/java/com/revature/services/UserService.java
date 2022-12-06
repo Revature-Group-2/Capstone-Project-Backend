@@ -25,4 +25,8 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public Optional<User> findById(int id) {
+        return this.userRepository.findById(id);
+    }
 }
