@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.revature.utils.ProfanityFilter;
@@ -38,9 +39,9 @@ public class PostController {
     
     @Authorized
     @PutMapping
-    public ResponseEntity<?> upsertPost(@RequestBody Post post) {
+    public ResponseEntity<?> upsertPost(@RequestBody Post post) throws IOException {
         if (profanityFilter.hasProfanity(post.getText())){
-            return ResponseEntity.badRequest().body("Profanity not allowed!");
+            return ResponseEntity.badRequest().body("profanity");
         }
     	return ResponseEntity.ok(this.postService.upsert(post));
     }
