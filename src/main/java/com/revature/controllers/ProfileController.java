@@ -79,7 +79,7 @@ public class ProfileController {
         }
     }
 
-    /* Not Tested */
+
     @Authorized
     @GetMapping("/general-information")
     public ResponseEntity<Object> getGeneralInformation(HttpSession session) {
@@ -93,7 +93,7 @@ public class ProfileController {
         }
     }
 
-    /* Not Tested */
+
     @Authorized
     @PostMapping("/general-information")
     public ResponseEntity<Object> updateGeneralInformation(@RequestBody GeneralInformationDTO generalInfo, HttpSession session) {
@@ -103,7 +103,7 @@ public class ProfileController {
             Profile profile = profileService.updateGeneralInformation(generalInfo, user);
 
             session.setAttribute("user", profile.getOwner());
-            return ResponseEntity.ok().body(new Message<Profile>("The password is successfully updated", profile));
+            return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (ProfileNotFoundException e) {

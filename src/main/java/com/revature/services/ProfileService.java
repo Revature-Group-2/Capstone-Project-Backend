@@ -101,13 +101,18 @@ public class ProfileService {
         if (generalInfo.getLastName().trim().equals(""))
             throw new NoNameException("The last name cannot be empty or consist of spaces");
         user.setLastName(generalInfo.getLastName());
+        user.setEmail(generalInfo.getEmail());
         
         profile.setOwner(user);
         profile.setGender(generalInfo.getGender());
         profile.setDob(generalInfo.getDob());
         profile.setPhoneNumber(generalInfo.getPhoneNumber());
 
-        userService.save(user);
+        /* If user's old and new do not match and email already exists in the DB */
+        if (!sessionUser.getEmail().equals(generalInfo.getEmail()) && userRepository.findByEmail(generalInfo.getEmail()).isPresent())
+            throw new EmailReservedException("The email " + generalInfo.getEmail() + " is being used.");
+
+        userRepository.save(user);
         return profileRepository.save(profile);
     }
 }
