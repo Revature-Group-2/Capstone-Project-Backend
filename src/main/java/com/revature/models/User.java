@@ -23,7 +23,7 @@ public class User {
     private int id;
     @Column(unique = true)
     private String email;
-    private String avatarImageUrl = "https://www.nicepng.com/png/full/128-1280406_view-user-icon-png-user-circle-icon-png.png";
+    private String avatarImageUrl;
     @JsonIgnore
     private String password;
     private String firstName;

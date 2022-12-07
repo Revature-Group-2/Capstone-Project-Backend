@@ -21,7 +21,7 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String backgroundImageUrl = "https://th.bing.com/th/id/R.77d86c07a77caa50a1007988a9c5df5d?rik=FccQzPNYUxhKaw&pid=ImgRaw&r=0";
+    private String backgroundImageUrl;
 
     private String currentCity;
     private String currentCountry;
@@ -39,6 +39,8 @@ public class Profile {
 
     private String companyName;
     private String companyUrl;
+
+    private String phoneNumber;
 
     @OneToOne
 	private User owner;
