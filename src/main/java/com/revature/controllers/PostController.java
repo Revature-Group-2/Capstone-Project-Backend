@@ -75,7 +75,6 @@ public class PostController {
         }
     }
 
-    @Authorized
     @GetMapping("/one/{id}")
     public ResponseEntity<Post> getPost(@PathVariable int id) {
         try {
