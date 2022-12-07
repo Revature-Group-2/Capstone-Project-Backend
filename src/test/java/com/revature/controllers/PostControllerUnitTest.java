@@ -2,35 +2,56 @@ package com.revature.controllers;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.revature.models.Post;
 import com.revature.services.PostService;
+import com.revature.utils.ProfanityFilter;
 
-@WebMvcTest(PostController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class PostControllerUnitTest {
-    
-    @Autowired
-    private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private PostService postService;
 
+    @Mock
+    private ProfanityFilter profanityFilter;
+
+    @InjectMocks
+    PostController postController;
+    
+    private MockMvc mockMvc;
+
     static String jsonMockPut;
+
+    @BeforeEach
+    public void setup(){
+        MockitoAnnotations.openMocks(postController);
+        this.mockMvc = MockMvcBuilders.standaloneSetup(postController).build();
+    }
     
     @BeforeAll
     public static void setupMockPutJson(){
+
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append("{\"id\":0,");
         jsonBuilder.append("\"text\":\"\",");
@@ -54,7 +75,7 @@ public class PostControllerUnitTest {
             e.printStackTrace();
             fail();
         }
-        verify(postService).getAll();
+        verify(postService).getAllSorted();
     }
     
     @Test
@@ -69,9 +90,10 @@ public class PostControllerUnitTest {
     }
 
     @Test
-    public void putPostCallsPostServiceUpsert() {
+    public void putPostCallsPostServiceUpsertIfNoProfanity() {
 
         try {
+            when(profanityFilter.hasProfanity(anyString())).thenReturn(false);
             this.mockMvc.perform(
                 put("/post")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -89,6 +111,7 @@ public class PostControllerUnitTest {
     public void putPostStatusOK() {
 
         try {
+            when(profanityFilter.hasProfanity(anyString())).thenReturn(false);
             this.mockMvc.perform(
                 put("/post")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
