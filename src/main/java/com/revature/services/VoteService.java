@@ -25,11 +25,11 @@ public class VoteService {
 
 
     @Transactional
-    public void vote(Vote vote) throws VoteNotFoundException, PostNotFoundException {
+    public void vote(Vote vote) throws PostNotFoundException {
         Post post = postRepository.findById(vote.getPost().getId())
                 .orElseThrow(() -> new PostNotFoundException("Post Not Found with ID - " + vote.getPost().getId()));
 
-        Optional<Vote> voteByPostAndUser = voteRepository.findTopByPostAndUserOrderByVoteIdDesc(post, post.getAuthor());
+        Optional<Vote> voteByPostAndUser = voteRepository.findTopByPostAndUserOrderByVoteIdDesc(post, vote.getUser());
         System.out.println(voteByPostAndUser.isPresent());
         if (voteByPostAndUser.isPresent()){
             System.out.println(voteByPostAndUser.get());
@@ -39,21 +39,31 @@ public class VoteService {
         if (voteByPostAndUser.isPresent() &&
                 voteByPostAndUser.get().getVoteType()
                         .equals(vote.getVoteType())) {
-            throw new VoteNotFoundException("You have already "
-                    + vote.getVoteType() + "'d for this post");
+            if (voteByPostAndUser.get().getVoteType().equals(UPVOTE)){
+                voteRepository.deleteById(voteByPostAndUser.get().getVoteId());
+                post.setVoteCount(post.getVoteCount() - 1);
+                postRepository.save(post);
+                return;
+            } else {
+                voteRepository.deleteById(voteByPostAndUser.get().getVoteId());
+                post.setVoteCount(post.getVoteCount() + 1);
+                postRepository.save(post);
+                return;
+            }
         }
 
         if (voteByPostAndUser.isPresent() &&
                 voteByPostAndUser.get().getVoteType()
                         .equals(UPVOTE) && vote.getVoteType().equals(DOWNVOTE))  {
             post.setVoteCount(post.getVoteCount() - 2);
-            voteRepository.delete(vote);
+            voteRepository.deleteById(voteByPostAndUser.get().getVoteId());
         }
 
         if (voteByPostAndUser.isPresent() &&
                 voteByPostAndUser.get().getVoteType()
                         .equals(DOWNVOTE) && vote.getVoteType().equals(UPVOTE))  {
             post.setVoteCount(post.getVoteCount() + 2);
+            voteRepository.deleteById(voteByPostAndUser.get().getVoteId());
         }
 
         if (!voteByPostAndUser.isPresent()) {
@@ -72,7 +82,7 @@ public class VoteService {
         return Vote.builder()
                 .voteType(vote.getVoteType())
                 .post(post)
-                .user(post.getAuthor())
+                .user(vote.getUser())
                 .build();
     }
 
