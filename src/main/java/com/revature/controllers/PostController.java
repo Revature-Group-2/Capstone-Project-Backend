@@ -74,4 +74,13 @@ public class PostController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/one/{id}")
+    public ResponseEntity<Post> getPost(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(this.postService.getOne(id).get());
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

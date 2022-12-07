@@ -2,6 +2,7 @@ package com.revature.services;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class PostService {
 	public List<Post> getAll() {
 		return this.postRepository.findAll();
 	}
+
+	public Optional<Post> getOne(int id) { return this.postRepository.findById(id); }
 
 	public List<Post> getAllSorted() {
 		List<Post> posts = this.postRepository.findAll();
