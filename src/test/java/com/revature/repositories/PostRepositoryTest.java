@@ -16,7 +16,7 @@ class PostRepositoryTest {
 
     @Test
     public void shouldSavePost() {
-        Post expectedPostObject = new Post(1,"text", "text", null, null);
+        Post expectedPostObject = new Post(1,"text", "text", 0 , null, null);
         Post actualPostObject = postRepository.save(expectedPostObject);
         assertThat(actualPostObject).usingRecursiveComparison().ignoringFields("id").isEqualTo(expectedPostObject);
     }

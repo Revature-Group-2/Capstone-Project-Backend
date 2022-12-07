@@ -51,7 +51,7 @@ class PostControllerTest {
 
     @Test
     void testUpsertPost() {
-        Post post = new Post(1,"text", "text", null, null);
+        Post post = new Post(1,"text", "text", 0, null, null);
         ResponseEntity<Post> responseEntity = new ResponseEntity<>(post, HttpStatus.OK);
         restTemplate.postForEntity(baseUrl, responseEntity, Post.class);
     }
