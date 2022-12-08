@@ -4,16 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.revature.exceptions.PostNotFoundException;
 import com.revature.utils.ProfanityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.revature.annotations.Authorized;
 import com.revature.models.Comment;
@@ -75,12 +70,23 @@ public class PostController {
         }
     }
 
+    @Authorized
     @GetMapping("/one/{id}")
     public ResponseEntity<Post> getPost(@PathVariable int id) {
         try {
             return ResponseEntity.ok(this.postService.getOne(id).get());
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Authorized
+    @DeleteMapping("/{id}")
+    public void deletePost(@PathVariable int id){
+        try {
+            postService.delete(id);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
         }
     }
 }

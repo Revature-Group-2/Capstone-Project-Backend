@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+import com.revature.annotations.Authorized;
 import com.revature.exceptions.PostNotFoundException;
 import com.revature.exceptions.VoteNotFoundException;
 import com.revature.models.Vote;
@@ -17,6 +18,7 @@ public class VoteController {
 
     private final VoteService voteService;
 
+    @Authorized
     @PostMapping
     public ResponseEntity<Void> vote(@RequestBody Vote vote) throws PostNotFoundException, VoteNotFoundException {
         voteService.vote(vote);

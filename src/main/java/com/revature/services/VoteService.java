@@ -30,10 +30,6 @@ public class VoteService {
                 .orElseThrow(() -> new PostNotFoundException("Post Not Found with ID - " + vote.getPost().getId()));
 
         Optional<Vote> voteByPostAndUser = voteRepository.findTopByPostAndUserOrderByVoteIdDesc(post, vote.getUser());
-        System.out.println(voteByPostAndUser.isPresent());
-        if (voteByPostAndUser.isPresent()){
-            System.out.println(voteByPostAndUser.get());
-        }
 
         // code block to check if the user has already voted for the post
         if (voteByPostAndUser.isPresent() &&
