@@ -2,6 +2,7 @@ package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,8 @@ class VoteServiceUnitTest {
 	
 	@InjectMocks
 	VoteService voteService;
-	
+
+	@Disabled
 	@Test
 	void test() {
 		fail("Not yet implemented");
