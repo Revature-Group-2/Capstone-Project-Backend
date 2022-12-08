@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.revature.dtos.ChangePasswordDTO;
 import com.revature.dtos.GeneralInformationDTO;
+import com.revature.dtos.ProfileEducationDTO;
+import com.revature.dtos.ProfileLocationDTO;
+import com.revature.dtos.ProfileMaritalStatusDTO;
+import com.revature.dtos.ProfileWorkDTO;
 import com.revature.exceptions.EmailReservedException;
 import com.revature.exceptions.NoNameException;
 import com.revature.exceptions.ProfileNotFoundException;
@@ -72,7 +76,7 @@ public class ProfileService {
         return userRepository.save(user);
     }
 
-    public GeneralInformationDTO getGeneralInProfile(User sessionUser) throws ProfileNotFoundException {
+    public GeneralInformationDTO getGeneralInformation(User sessionUser) throws ProfileNotFoundException {
         Optional<Profile> optionalProfile = profileRepository.findByOwner(sessionUser);
 
         if (optionalProfile.isEmpty()) 
@@ -115,4 +119,123 @@ public class ProfileService {
         userRepository.save(user);
         return profileRepository.save(profile);
     }
+
+    public ProfileLocationDTO getProfileLocation(User sessionUser) throws ProfileNotFoundException {
+        Optional<Profile> optionalProfile = profileRepository.findByOwner(sessionUser);
+
+        if (optionalProfile.isEmpty()) 
+            throw new ProfileNotFoundException("The profile related to " + sessionUser.getFirstName() + " "
+                        + sessionUser.getLastName() + " user not has been found");
+        
+        Profile profile = optionalProfile.get();
+
+        return new ProfileLocationDTO(profile);
+    }
+
+    public Profile updateProfileLocation(ProfileLocationDTO profileLocation, User sessionUser) throws UserNotFoundException, ProfileNotFoundException {
+        Optional<User> repoUser = userService.findByCredentials(sessionUser.getEmail(), sessionUser.getPassword());
+
+        if (repoUser.isEmpty())
+            throw new UserNotFoundException("The session user has not been found. Try to re-login");
+
+        User user = repoUser.get();
+
+        Profile profile = getProfileByUser(user);
+
+        profile.setCurrentCity(profileLocation.getCurrentCity());
+        profile.setCurrentCountry(profileLocation.getCurrentCountry());
+        profile.setBornCity(profileLocation.getBornCity());
+        profile.setBornCountry(profileLocation.getBornCountry());
+
+        return profileRepository.save(profile);
+    }
+
+    public ProfileEducationDTO getProfileEducation(User sessionUser) throws ProfileNotFoundException {
+        Optional<Profile> optionalProfile = profileRepository.findByOwner(sessionUser);
+
+        if (optionalProfile.isEmpty()) 
+            throw new ProfileNotFoundException("The profile related to " + sessionUser.getFirstName() + " "
+                        + sessionUser.getLastName() + " user not has been found");
+        
+        Profile profile = optionalProfile.get();
+
+        return new ProfileEducationDTO(profile);
+    }
+
+
+    public Profile updateProfileEducation(ProfileEducationDTO profileEducation, User sessionUser) throws UserNotFoundException, ProfileNotFoundException {
+        Optional<User> repoUser = userService.findByCredentials(sessionUser.getEmail(), sessionUser.getPassword());
+
+        if (repoUser.isEmpty())
+            throw new UserNotFoundException("The session user has not been found. Try to re-login");
+
+        User user = repoUser.get();
+
+        Profile profile = getProfileByUser(user);
+
+        profile.setSchoolName(profileEducation.getSchoolName());
+
+        return profileRepository.save(profile);
+    }
+
+
+    public ProfileWorkDTO getProfileWork(User sessionUser) throws ProfileNotFoundException {
+        Optional<Profile> optionalProfile = profileRepository.findByOwner(sessionUser);
+
+        if (optionalProfile.isEmpty()) 
+            throw new ProfileNotFoundException("The profile related to " + sessionUser.getFirstName() + " "
+                        + sessionUser.getLastName() + " user not has been found");
+        
+        Profile profile = optionalProfile.get();
+
+        return new ProfileWorkDTO(profile);
+    }
+
+    public Profile updateProfileWork(ProfileWorkDTO profileWork, User sessionUser) throws UserNotFoundException, ProfileNotFoundException {
+        Optional<User> repoUser = userService.findByCredentials(sessionUser.getEmail(), sessionUser.getPassword());
+
+        if (repoUser.isEmpty())
+            throw new UserNotFoundException("The session user has not been found. Try to re-login");
+
+        User user = repoUser.get();
+
+        Profile profile = getProfileByUser(user);
+
+        profile.setJobTitle(profileWork.getJobTitle());
+        profile.setCompanyName(profileWork.getCompanyName());
+        profile.setCompanyUrl(profileWork.getCompanyUrl());
+
+        return profileRepository.save(profile);
+    }
+
+
+    public ProfileMaritalStatusDTO getProfileMaritalStatus(User sessionUser) throws ProfileNotFoundException {
+        Optional<Profile> optionalProfile = profileRepository.findByOwner(sessionUser);
+
+        if (optionalProfile.isEmpty()) 
+            throw new ProfileNotFoundException("The profile related to " + sessionUser.getFirstName() + " "
+                        + sessionUser.getLastName() + " user not has been found");
+        
+        Profile profile = optionalProfile.get();
+
+        return new ProfileMaritalStatusDTO(profile);
+    }
+
+
+    public Profile updateProfileMaritalStatus(ProfileMaritalStatusDTO profileMaritalStatus, User sessionUser) throws UserNotFoundException, ProfileNotFoundException {
+        Optional<User> repoUser = userService.findByCredentials(sessionUser.getEmail(), sessionUser.getPassword());
+
+        if (repoUser.isEmpty())
+            throw new UserNotFoundException("The session user has not been found. Try to re-login");
+
+        User user = repoUser.get();
+
+        Profile profile = getProfileByUser(user);
+
+        profile.setMaritalStatus(profileMaritalStatus.getMaritalStatus());
+
+        return profileRepository.save(profile);
+    }
+
+    
 }

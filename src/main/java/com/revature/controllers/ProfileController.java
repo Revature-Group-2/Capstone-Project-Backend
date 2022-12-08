@@ -3,6 +3,10 @@ package com.revature.controllers;
 import com.revature.annotations.Authorized;
 import com.revature.dtos.ChangePasswordDTO;
 import com.revature.dtos.GeneralInformationDTO;
+import com.revature.dtos.ProfileEducationDTO;
+import com.revature.dtos.ProfileLocationDTO;
+import com.revature.dtos.ProfileMaritalStatusDTO;
+import com.revature.dtos.ProfileWorkDTO;
 import com.revature.exceptions.EmailReservedException;
 import com.revature.exceptions.NoNameException;
 import com.revature.exceptions.ProfileNotFoundException;
@@ -86,7 +90,7 @@ public class ProfileController {
         User user = (User) session.getAttribute("user");
 
         try {
-            GeneralInformationDTO generalInformation = profileService.getGeneralInProfile(user);
+            GeneralInformationDTO generalInformation = profileService.getGeneralInformation(user);
             return ResponseEntity.ok().body(generalInformation);
         } catch (ProfileNotFoundException e) {
            return ResponseEntity.badRequest().body(e.getMessage());
@@ -113,5 +117,125 @@ public class ProfileController {
         } catch (EmailReservedException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @Authorized
+    @GetMapping("/profile-location")
+    public ResponseEntity<Object> getProfileLocation(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        try {
+            ProfileLocationDTO profileLocation = profileService.getProfileLocation(user);
+            return ResponseEntity.ok().body(profileLocation);
+        } catch (ProfileNotFoundException e) {
+           return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Authorized
+    @PostMapping("/profile-location")
+    public ResponseEntity<Object> updateProfileLocation(@RequestBody ProfileLocationDTO profileLocation, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+      
+        try {
+            Profile profile = profileService.updateProfileLocation(profileLocation, user);
+
+            return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } 
+    }
+
+    @Authorized
+    @GetMapping("/profile-education")
+    public ResponseEntity<Object> getProfileEducation(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        try {
+            ProfileEducationDTO profileLocation = profileService.getProfileEducation(user);
+
+            return ResponseEntity.ok().body(profileLocation);
+        } catch (ProfileNotFoundException e) {
+           return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Authorized
+    @PostMapping("/profile-education")
+    public ResponseEntity<Object> updateProfileEducation(@RequestBody ProfileEducationDTO profileLocation, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+      
+        try {
+            Profile profile = profileService.updateProfileEducation(profileLocation, user);
+
+            return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } 
+    }
+
+
+    @Authorized
+    @GetMapping("/profile-work")
+    public ResponseEntity<Object> getProfileWork(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        try {
+            ProfileWorkDTO profileWork = profileService.getProfileWork(user);
+
+            return ResponseEntity.ok().body(profileWork);
+        } catch (ProfileNotFoundException e) {
+           return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Authorized
+    @PostMapping("/profile-work")
+    public ResponseEntity<Object> updateProfileWork(@RequestBody ProfileWorkDTO profileLocation, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+      
+        try {
+            Profile profile = profileService.updateProfileWork(profileLocation, user);
+
+            return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } 
+    }
+
+    @Authorized
+    @GetMapping("/profile-marital-status")
+    public ResponseEntity<Object> getProfileMaritalStatus(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        try {
+            ProfileMaritalStatusDTO profileMaritalStatus = profileService.getProfileMaritalStatus(user);
+
+            return ResponseEntity.ok().body(profileMaritalStatus);
+        } catch (ProfileNotFoundException e) {
+           return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Authorized
+    @PostMapping("/profile-marital-status")
+    public ResponseEntity<Object> updateProfileMaritalStatus(@RequestBody ProfileMaritalStatusDTO profileLocation, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+      
+        try {
+            Profile profile = profileService.updateProfileMaritalStatus(profileLocation, user);
+
+            return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } 
     }
 }

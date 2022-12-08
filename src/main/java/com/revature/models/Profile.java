@@ -31,7 +31,7 @@ public class Profile {
 
     private String dob;
     private String gender;
-    private String martialStatus;
+    private String maritalStatus;
 
     private String schoolName;
 
