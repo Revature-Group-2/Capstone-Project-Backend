@@ -24,10 +24,4 @@ INSERT INTO posts (id, text, image_url, vote_count, author_id) VALUES
     '',
     0,
     1
-), (
-    DEFAULT,
-    'The classic',
-    'https://i.imgur.com/fhgzVEt.jpeg',
-    0,
-    1
 );
