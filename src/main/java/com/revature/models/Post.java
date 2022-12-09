@@ -30,6 +30,7 @@ public class Post implements Comparable<Post>  {
 	private String text;
 	private String imageUrl;
 	private Integer voteCount = 0;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Comment> comments;
 

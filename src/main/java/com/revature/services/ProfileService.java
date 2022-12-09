@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.dtos.ChangePasswordDTO;
 import com.revature.dtos.GeneralInformationDTO;
+import com.revature.dtos.ProfileBackgroundDTO;
 import com.revature.dtos.ProfileEducationDTO;
 import com.revature.dtos.ProfileLocationDTO;
 import com.revature.dtos.ProfileMaritalStatusDTO;
@@ -237,5 +238,22 @@ public class ProfileService {
         return profileRepository.save(profile);
     }
 
+    public Profile updateProfileBackground(ProfileBackgroundDTO profileBackground, User sessionUser) throws UserNotFoundException, ProfileNotFoundException {
+        Optional<User> repoUser = userService.findByCredentials(sessionUser.getEmail(), sessionUser.getPassword());
+
+        if (repoUser.isEmpty())
+            throw new UserNotFoundException("The session user has not been found. Try to re-login");
+
+        User user = repoUser.get();
+
+        Profile profile = getProfileByUser(user);
+
+        profile.setBackgroundImageUrl(profileBackground.getUrl());
+
+        return profileRepository.save(profile);
+    }
+
+
+    
     
 }

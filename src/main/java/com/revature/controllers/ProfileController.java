@@ -3,6 +3,7 @@ package com.revature.controllers;
 import com.revature.annotations.Authorized;
 import com.revature.dtos.ChangePasswordDTO;
 import com.revature.dtos.GeneralInformationDTO;
+import com.revature.dtos.ProfileBackgroundDTO;
 import com.revature.dtos.ProfileEducationDTO;
 import com.revature.dtos.ProfileLocationDTO;
 import com.revature.dtos.ProfileMaritalStatusDTO;
@@ -18,6 +19,7 @@ import com.revature.models.User;
 
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,6 +35,7 @@ import com.revature.services.ProfileService;
 @RestController
 @RequestMapping("/profile")
 @CrossOrigin(origins = {"http://localhost:4200","http://52.37.182.192:4200"}, allowCredentials = "true")
+@AllowSysOut
 public class ProfileController {
 
     @Autowired
@@ -230,6 +233,24 @@ public class ProfileController {
       
         try {
             Profile profile = profileService.updateProfileMaritalStatus(profileLocation, user);
+
+            return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } 
+    }
+
+
+    @Authorized
+    @PostMapping("/profile-background")
+    public ResponseEntity<Object> updateProfileBackground(@RequestBody ProfileBackgroundDTO profileBackground, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+      
+        try {
+            System.out.println(profileBackground);
+            Profile profile = profileService.updateProfileBackground(profileBackground, user);
 
             return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
         } catch (UserNotFoundException e) {
