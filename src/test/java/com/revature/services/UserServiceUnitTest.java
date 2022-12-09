@@ -59,4 +59,12 @@ public class UserServiceUnitTest {
             return;
         }
     }
+    
+    @Test
+    public void findByIdCallsRepositoryFindById() {
+    	User user = new User(0,"","","","");
+    	when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+    	userService.findById(user.getId());
+    	verify(userRepository).findById(user.getId());
+    }
 }

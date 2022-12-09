@@ -48,4 +48,6 @@ public class PostService {
 	public List<Post> userPosts(User user) {
 		return this.postRepository.findAllByAuthor(user);
 	}
+
+	public void delete(int id) { postRepository.deleteById(id); }
 }
