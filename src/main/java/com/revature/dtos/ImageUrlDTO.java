@@ -9,6 +9,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ProfileBackgroundDTO {
+public class ImageUrlDTO {
     private String url;
 }
