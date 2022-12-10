@@ -3,7 +3,7 @@ package com.revature.controllers;
 import com.revature.annotations.Authorized;
 import com.revature.dtos.ChangePasswordDTO;
 import com.revature.dtos.GeneralInformationDTO;
-import com.revature.dtos.ProfileBackgroundDTO;
+import com.revature.dtos.ImageUrlDTO;
 import com.revature.dtos.ProfileEducationDTO;
 import com.revature.dtos.ProfileLocationDTO;
 import com.revature.dtos.ProfileMaritalStatusDTO;
@@ -245,12 +245,32 @@ public class ProfileController {
 
     @Authorized
     @PostMapping("/profile-background")
-    public ResponseEntity<Object> updateProfileBackground(@RequestBody ProfileBackgroundDTO profileBackground, HttpSession session) {
+    public ResponseEntity<Object> updateProfileBackground(@RequestBody ImageUrlDTO profileBackground, HttpSession session) {
         User user = (User) session.getAttribute("user");
       
         try {
             System.out.println(profileBackground);
             Profile profile = profileService.updateProfileBackground(profileBackground, user);
+
+            return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } 
+    }
+
+    
+    @Authorized
+    @PostMapping("/profile-avatar")
+    public ResponseEntity<Object> updateProfileAvatar(@RequestBody ImageUrlDTO avatar, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+      
+        try {
+            Profile profile = profileService.updateProfileAvatar(avatar, user);
+            User updatedUser = profile.getOwner();
+
+            session.setAttribute("user", updatedUser);
 
             return ResponseEntity.ok().body(new Message<Profile>("The profile is successfully updated.", profile));
         } catch (UserNotFoundException e) {
