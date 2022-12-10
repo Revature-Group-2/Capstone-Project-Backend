@@ -21,7 +21,7 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String backgroundImageUrl = "https://th.bing.com/th/id/R.77d86c07a77caa50a1007988a9c5df5d?rik=FccQzPNYUxhKaw&pid=ImgRaw&r=0";
+    private String backgroundImageUrl = "https://fthmb.tqn.com/vMHG2Hi44XBqddh93WTo3nkWESU=/5000x3000/filters:fill(auto,1)/low-poly-background-672623312-5a5a8563e258f800370a105a.jpg";
 
     private String currentCity;
     private String currentCountry;
@@ -31,7 +31,7 @@ public class Profile {
 
     private String dob;
     private String gender;
-    private String martialStatus;
+    private String maritalStatus;
 
     private String schoolName;
 
@@ -39,6 +39,8 @@ public class Profile {
 
     private String companyName;
     private String companyUrl;
+
+    private String phoneNumber;
 
     @OneToOne
 	private User owner;
