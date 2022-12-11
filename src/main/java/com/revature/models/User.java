@@ -2,6 +2,7 @@ package com.revature.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@EqualsAndHashCode
 @AllowSysOut
 public class User {
 
@@ -23,6 +25,7 @@ public class User {
     private int id;
     @Column(unique = true)
     private String email;
+    @Column(name = "avatar_image_url")
     private String avatarImageUrl = "https://www.nicepng.com/png/full/128-1280406_view-user-icon-png-user-circle-icon-png.png";
     @JsonIgnore
     private String password;
