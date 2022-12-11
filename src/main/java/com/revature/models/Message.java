@@ -2,16 +2,11 @@ package com.revature.models;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class Message {
-    private String senderName;
-    private String receiverName;
+public class Message <T> {
     private String message;
-    private String date;
-    private Status status;
-
+    private T entity;
 }

@@ -1,6 +1,6 @@
 package com.revature.controllers;
 
-import com.revature.models.Message;
+import com.revature.models.ChatMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,12 +14,12 @@ public class ChatController {
 
     @MessageMapping("/message") // app/message
     @SendTo("/chatroom/public")
-    private Message receivePublicMessage(@Payload Message message) {
+    private ChatMessage receivePublicMessage(@Payload ChatMessage message) {
         return message;
     }
 
     @MessageMapping("/private-message")
-    public Message receivePrivateMessage(@Payload Message message) {
+    public ChatMessage receivePrivateMessage(@Payload ChatMessage message) {
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/private",message);  // /user/(username)/private
         return message;
     }
