@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/vote")
 @AllArgsConstructor
@@ -23,5 +25,10 @@ public class VoteController {
     public ResponseEntity<Void> vote(@RequestBody Vote vote) throws PostNotFoundException, VoteNotFoundException {
         voteService.vote(vote);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/one/{userId}&{postId}")
+    public ResponseEntity<Optional<Vote>> getVoteByUserAndPost(@PathVariable int userId, @PathVariable int postId){
+        return ResponseEntity.ok(this.voteService.getVoteByUserIdAndPostId(userId, postId));
     }
 }
