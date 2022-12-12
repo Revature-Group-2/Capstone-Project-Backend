@@ -12,10 +12,13 @@ import com.revature.exceptions.EmailReservedException;
 import com.revature.exceptions.NoNameException;
 import com.revature.exceptions.ProfileNotFoundException;
 import com.revature.exceptions.UserNotFoundException;
+import com.revature.exceptions.WrongIdsFormatException;
 import com.revature.exceptions.WrongPasswordException;
 import com.revature.models.Message;
 import com.revature.models.Profile;
 import com.revature.models.User;
+
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.services.ProfileService;
@@ -278,5 +282,34 @@ public class ProfileController {
         } catch (ProfileNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } 
+    }
+
+    @Authorized
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAllProfilesByIds(@RequestParam(name = "ids") String ids,
+                                                      @RequestParam(name = "limit", required = false) String limit,
+                                                      @RequestParam(name = "shuffle", required = false) String shuffle) 
+    {
+        long parsedLimit;
+        boolean parsedShuffle;
+        List<Profile> profiles;
+
+        try {
+            if (limit != null && shuffle != null) {
+                parsedLimit = Long.parseLong(limit);
+                parsedShuffle = Boolean.parseBoolean(shuffle);
+                profiles = profileService.getAllProfilesByIds(ids, parsedLimit, parsedShuffle);
+            } else if (limit != null && shuffle == null) {
+                parsedLimit = Long.parseLong(limit);
+                profiles = profileService.getAllProfilesByIds(ids, parsedLimit);
+            } else 
+                profiles = profileService.getAllProfilesByIds(ids);
+
+            return ResponseEntity.ok(profiles);
+        } catch (WrongIdsFormatException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(new Message<>("Wrong format of the query. The limit parameter should be a number.", null));
+        }
     }
 }
