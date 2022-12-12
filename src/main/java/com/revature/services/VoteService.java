@@ -3,8 +3,10 @@ package com.revature.services;
 import com.revature.exceptions.PostNotFoundException;
 import com.revature.exceptions.VoteNotFoundException;
 import com.revature.models.Post;
+import com.revature.models.User;
 import com.revature.models.Vote;
 import com.revature.repositories.PostRepository;
+import com.revature.repositories.UserRepository;
 import com.revature.repositories.VoteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,15 @@ public class VoteService {
     private final VoteRepository voteRepository;
     private final PostRepository postRepository;
 
+    private final UserRepository userRepository;
 
+    @Transactional
+    public Optional<Vote> getVoteByUserIdAndPostId(int userId, int postId) {
+        User user = userRepository.findById(userId).get();
+        Post post = postRepository.findById(postId).get();
+        Optional<Vote> voteByPostAndUser = voteRepository.findTopByPostAndUserOrderByVoteIdDesc(post, user);
+        return voteByPostAndUser;
+    }
 
     @Transactional
     public void vote(Vote vote) throws PostNotFoundException {
