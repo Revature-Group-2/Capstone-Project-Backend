@@ -1,5 +1,5 @@
-INSERT INTO users (id, email, password, first_name, last_name, avatar_image_url) VALUES 
-( DEFAULT, 'testuser@gmail.com', 'password', 'Test', 'User', 'https://www.nicepng.com/png/full/128-1280406_view-user-icon-png-user-circle-icon-png.png'), 
+INSERT INTO users (id, email, password, first_name, last_name, avatar_image_url) VALUES
+( DEFAULT, 'testuser@gmail.com', 'password', 'Test', 'User', 'https://www.nicepng.com/png/full/128-1280406_view-user-icon-png-user-circle-icon-png.png'),
 ( DEFAULT, 'q@q', '111111', 'Test', 'User', 'https://www.nicepng.com/png/full/128-1280406_view-user-icon-png-user-circle-icon-png.png'),
 ( DEFAULT, 'johndoe@outlook.com', 'qwerty', 'John', 'Doe', 'https://th.bing.com/th/id/OIP.ExWpNcwPF2JAaeUcm-nypwHaD4?pid=ImgDet&rs=1'),
 ( DEFAULT, 'linkinpark@gmail.com', 'somepassword', 'Linkin', 'Park', 'https://static.billboard.com/files/media/linkin-park-chester-bennington-live-june-2017-a-02-billboard-1548-compressed.jpg'),
@@ -9,7 +9,7 @@ INSERT INTO users (id, email, password, first_name, last_name, avatar_image_url)
 
 
 INSERT INTO profiles (id, owner_id, background_image_url) VALUES
-(DEFAULT, 1, 'https://fthmb.tqn.com/vMHG2Hi44XBqddh93WTo3nkWESU=/5000x3000/filters:fill(auto,1)/low-poly-background-672623312-5a5a8563e258f800370a105a.jpg'), 
+(DEFAULT, 1, 'https://fthmb.tqn.com/vMHG2Hi44XBqddh93WTo3nkWESU=/5000x3000/filters:fill(auto,1)/low-poly-background-672623312-5a5a8563e258f800370a105a.jpg'),
 (DEFAULT, 2, 'https://fthmb.tqn.com/vMHG2Hi44XBqddh93WTo3nkWESU=/5000x3000/filters:fill(auto,1)/low-poly-background-672623312-5a5a8563e258f800370a105a.jpg');
 
 INSERT INTO profiles(id, owner_id, background_image_url, current_city, current_country, born_city, born_country, dob, gender, marital_status, school_name, job_title, company_name, company_url) VALUES
@@ -21,12 +21,9 @@ INSERT INTO profiles(id, owner_id, background_image_url, current_city, current_c
 
 
 
-
-
 INSERT INTO posts (id, text, image_url, vote_count, author_id) VALUES
 ( DEFAULT, 'The classic', 'https://i.imgur.com/fhgzVEt.jpeg', 0, 1),
 ( DEFAULT, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', '', 0, 1),
 ( DEFAULT, 'A friend knows the song in my heart and sings it to me when my memory fails.', 'https://www.alt1051.com/wp-content/uploads/2021/01/GettyImages-56793352-scaled.jpg', 0, 4),
 ( DEFAULT, '“Don’t let yesterday take up too much of today.” — Will Rogers', 'https://www.thedigitalfix.com/wp-content/sites/thedigitalfix/2022/12/jennifer-lawrence-hunger-games-1.jpg', 0, 7),
 ( DEFAULT, '', 'https://wallpapercave.com/wp/wp3324779.jpg', 0, 5),
-( DEFAULT, 'The classic', 'https://eskipaper.com/images/eminem-1.jpg',0 , 5);
