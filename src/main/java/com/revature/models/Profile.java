@@ -1,5 +1,8 @@
 package com.revature.models;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,6 +45,31 @@ public class Profile {
 
     private String phoneNumber;
 
+    /**
+     * Represents IDs of other users to which this user is subscribed.
+     */
+    private LinkedList<Integer> subscriptionIds = new LinkedList<>();
+
     @OneToOne
 	private User owner;
+
+    public Profile(int id, String backgroundImageUrl, String currentCity, String currentCountry, String bornCity,
+            String bornCountry, String dob, String gender, String maritalStatus, String schoolName, String jobTitle,
+            String companyName, String companyUrl, String phoneNumber, User owner) {
+        this.id = id;
+        this.backgroundImageUrl = backgroundImageUrl;
+        this.currentCity = currentCity;
+        this.currentCountry = currentCountry;
+        this.bornCity = bornCity;
+        this.bornCountry = bornCountry;
+        this.dob = dob;
+        this.gender = gender;
+        this.maritalStatus = maritalStatus;
+        this.schoolName = schoolName;
+        this.jobTitle = jobTitle;
+        this.companyName = companyName;
+        this.companyUrl = companyUrl;
+        this.phoneNumber = phoneNumber;
+        this.owner = owner;
+    }
 }

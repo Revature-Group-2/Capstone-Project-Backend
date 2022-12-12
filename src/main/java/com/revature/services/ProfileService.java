@@ -1,7 +1,14 @@
 package com.revature.services;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +23,7 @@ import com.revature.exceptions.EmailReservedException;
 import com.revature.exceptions.NoNameException;
 import com.revature.exceptions.ProfileNotFoundException;
 import com.revature.exceptions.UserNotFoundException;
+import com.revature.exceptions.WrongIdsFormatException;
 import com.revature.exceptions.WrongPasswordException;
 import com.revature.models.Profile;
 import com.revature.models.User;
@@ -23,6 +31,7 @@ import com.revature.repositories.ProfileRepository;
 import com.revature.repositories.UserRepository;
 
 @Service
+@AllowSysOut
 public class ProfileService {
     
     @Autowired
@@ -113,7 +122,7 @@ public class ProfileService {
         profile.setDob(generalInfo.getDob());
         profile.setPhoneNumber(generalInfo.getPhoneNumber());
 
-        /* If user's old and new do not match and email already exists in the DB */
+        /* If user's old and new emails do not match and the email already reserved in the DB */
         if (!sessionUser.getEmail().equals(generalInfo.getEmail()) && userRepository.findByEmail(generalInfo.getEmail()).isPresent())
             throw new EmailReservedException("The email " + generalInfo.getEmail() + " is being used.");
 
@@ -266,11 +275,59 @@ public class ProfileService {
         user.setAvatarImageUrl(avatar.getUrl());
 
         profile.setOwner(user);
-
         userRepository.save(user);
 
         return profileRepository.save(profile);
     }
 
-    
+
+
+    public List<Profile> getAllProfilesByIds(String commaSeparatedIds) throws WrongIdsFormatException {
+        return getAllProfilesByIds(commaSeparatedIds, -1, false);
+    }
+    public List<Profile> getAllProfilesByIds(String commaSeparatedIds, long limit) throws WrongIdsFormatException {
+        return getAllProfilesByIds(commaSeparatedIds, limit, false);
+    }
+    public List<Profile> getAllProfilesByIds(String commaSeparatedIds, long limit, boolean shuffle) throws WrongIdsFormatException {
+        List<Integer> ids;
+        List<Profile> profiles = new LinkedList<>();
+
+        /* Converts comma-separated ids into array of ids. If the c-s ids has words, throws WrongIdsFormatException. 
+            Removes all negative values, only unique values  
+        */
+        try { 
+            if (limit > 0)  {
+                ids = Arrays.stream(commaSeparatedIds.split(","))
+                            .mapToInt(Integer::parseInt)
+                            .limit(limit)
+                            .filter(x -> x > 0)
+                            .distinct()
+                            .boxed()
+                            .collect(Collectors.toList());
+            } else {
+                ids = Arrays.stream(commaSeparatedIds.split(","))
+                            .mapToInt(Integer::parseInt)
+                            .filter(x -> x > 0)
+                            .distinct()
+                            .boxed()
+                            .collect(Collectors.toList());
+            }
+        } 
+        catch (NumberFormatException e) {
+            throw new WrongIdsFormatException("The endpoint accepts only comma separated numbers. Your request is: " + commaSeparatedIds);
+        }
+
+        if (shuffle) Collections.shuffle(ids);
+
+        for (int id : ids) {
+            Optional<Profile> optionalProfile = profileRepository.findById(id);
+
+            if (optionalProfile.isPresent())
+                profiles.add(optionalProfile.get());
+        }
+
+
+        return profiles;
+    }
+
 }
