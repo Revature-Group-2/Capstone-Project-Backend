@@ -11,7 +11,7 @@ INSERT INTO users (id, email, password, first_name, last_name, avatar_image_url)
     'q@q',
     '111111',
     'Test',
-    'User',
+    'User2',
     'https://www.nicepng.com/png/full/128-1280406_view-user-icon-png-user-circle-icon-png.png'
 );
 

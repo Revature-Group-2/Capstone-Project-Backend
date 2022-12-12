@@ -11,7 +11,6 @@ public class ChatService {
     private Set<String> chatRooms = new HashSet<>(){{add("public");}};
 
     public Set<String> getChatRooms() {
-        System.out.println(chatRooms);
         return chatRooms;
     }
 
