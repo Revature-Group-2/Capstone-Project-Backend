@@ -1,8 +1,9 @@
 package com.revature.models;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
-import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -48,7 +49,12 @@ public class Profile {
     /**
      * Represents IDs of other users to which this user is subscribed.
      */
+    @Column(length = 4_000)
     private LinkedList<Integer> subscriptionIds = new LinkedList<>();
+
+    @Column(length = 4_000)
+    private ArrayDeque<String> photoUrls = new ArrayDeque<>();
+
 
     @OneToOne
 	private User owner;
