@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.servlet.http.HttpSession;
+
 import com.revature.exceptions.PostNotFoundException;
+import com.revature.exceptions.ProfileNotFoundException;
+import com.revature.exceptions.UserNotFoundException;
 import com.revature.utils.ProfanityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import com.revature.annotations.Authorized;
 import com.revature.models.Comment;
 import com.revature.models.Post;
+import com.revature.models.User;
 import com.revature.services.PostService;
 import com.revature.services.UserService;
 
@@ -87,6 +92,20 @@ public class PostController {
             postService.delete(id);
         } catch (NoSuchElementException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Authorized
+    @GetMapping("/subscribed")
+    public ResponseEntity<Object> getAllSubscribedPosts(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        
+    	try {
+            return ResponseEntity.ok(this.postService.getAllSubscribedPosts(user));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
