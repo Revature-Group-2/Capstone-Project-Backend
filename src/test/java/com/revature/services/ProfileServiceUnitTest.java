@@ -1,6 +1,7 @@
 package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -66,7 +67,7 @@ class ProfileServiceUnitTest {
 		profile.setOwner(user);
 		when(profileRepository.save(profile)).thenReturn(profile);
         profileService.registerProfile(user);
-        verify(profileRepository).save(profile);
+        verify(profileRepository).save(any(Profile.class));
 	}
 	
 	@Test

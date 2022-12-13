@@ -1,10 +1,12 @@
 package com.revature.services;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ import com.revature.dtos.ProfileLocationDTO;
 import com.revature.dtos.ProfileMaritalStatusDTO;
 import com.revature.dtos.ProfileWorkDTO;
 import com.revature.exceptions.EmailReservedException;
+import com.revature.exceptions.ImageNotFoundException;
 import com.revature.exceptions.NoNameException;
 import com.revature.exceptions.ProfileNotFoundException;
 import com.revature.exceptions.UserNotFoundException;
@@ -330,4 +333,46 @@ public class ProfileService {
         return profiles;
     }
 
+
+    public Profile updatePhotos(ImageUrlDTO imageUrlDTO, User sessionUser) throws UserNotFoundException, ProfileNotFoundException {
+        Optional<User> repoUser = userService.findByCredentials(sessionUser.getEmail(), sessionUser.getPassword());
+
+        if (repoUser.isEmpty())
+            throw new UserNotFoundException("The session user has not been found. Try to re-login");
+
+        User user = repoUser.get();
+
+        Profile profile = getProfileByUser(user);
+
+        ArrayDeque<String> photoUrls = profile.getPhotoUrls() != null ? profile.getPhotoUrls() : new ArrayDeque<>();
+
+        photoUrls.addFirst(imageUrlDTO.getUrl());
+        profile.setPhotoUrls(photoUrls);
+
+        return profileRepository.save(profile);
+    }
+
+
+    public Profile removePhoto(ImageUrlDTO imageUrlDTO, User sessionUser) throws UserNotFoundException, ProfileNotFoundException, ImageNotFoundException {
+        Optional<User> repoUser = userService.findByCredentials(sessionUser.getEmail(), sessionUser.getPassword());
+
+        if (repoUser.isEmpty())
+            throw new UserNotFoundException("The session user has not been found. Try to re-login");
+
+        User user = repoUser.get();
+
+        Profile profile = getProfileByUser(user);
+
+        ArrayDeque<String> photoUrls = profile.getPhotoUrls();
+
+        if (photoUrls == null)
+            throw new ImageNotFoundException("The photo has not been found");
+
+        photoUrls.remove(imageUrlDTO.getUrl());
+        profile.setPhotoUrls(photoUrls);
+
+        return profileRepository.save(profile);
+    }
+
+    
 }
