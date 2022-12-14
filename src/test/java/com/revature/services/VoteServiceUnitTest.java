@@ -32,7 +32,6 @@ class VoteServiceUnitTest {
 	@InjectMocks
 	VoteService voteService;
 
-	@Disabled
 	@Test
 	public void voteHasAPost() {
 		Post post = mock(Post.class);
@@ -106,6 +105,7 @@ class VoteServiceUnitTest {
 		}
 	}
 	
+	@Test
 	public void voteDownVoteToUpVote() {
 		User user = mock(User.class);
 		Post post = new Post(0, null, null, 0, null, user);

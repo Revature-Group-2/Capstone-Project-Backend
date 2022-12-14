@@ -9,6 +9,7 @@ import com.revature.dtos.ProfileLocationDTO;
 import com.revature.dtos.ProfileMaritalStatusDTO;
 import com.revature.dtos.ProfileWorkDTO;
 import com.revature.exceptions.EmailReservedException;
+import com.revature.exceptions.ImageNotFoundException;
 import com.revature.exceptions.NoNameException;
 import com.revature.exceptions.ProfileNotFoundException;
 import com.revature.exceptions.UserNotFoundException;
@@ -27,8 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -310,6 +313,38 @@ public class ProfileController {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body(new Message<>("Wrong format of the query. The limit parameter should be a number.", null));
+        }
+    }
+
+
+    @Authorized
+    @PutMapping("/update-photos")
+    public ResponseEntity<Object> updatePhotos(@RequestBody ImageUrlDTO imageUrlDTO, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        
+        try {
+            return ResponseEntity.ok(profileService.updatePhotos(imageUrlDTO, user));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+    @Authorized
+    @PatchMapping("/update-photos")
+    public ResponseEntity<Object> removePhoto(@RequestBody ImageUrlDTO imageUrlDTO, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        
+        try {
+            return ResponseEntity.ok(profileService.removePhoto(imageUrlDTO, user));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ImageNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

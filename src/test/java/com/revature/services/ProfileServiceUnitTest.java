@@ -1,6 +1,7 @@
 package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -24,9 +25,11 @@ import com.revature.dtos.ProfileLocationDTO;
 import com.revature.dtos.ProfileMaritalStatusDTO;
 import com.revature.dtos.ProfileWorkDTO;
 import com.revature.exceptions.EmailReservedException;
+import com.revature.exceptions.ImageNotFoundException;
 import com.revature.exceptions.NoNameException;
 import com.revature.exceptions.ProfileNotFoundException;
 import com.revature.exceptions.UserNotFoundException;
+import com.revature.exceptions.WrongIdsFormatException;
 import com.revature.exceptions.WrongPasswordException;
 import com.revature.models.Post;
 import com.revature.models.Profile;
@@ -66,7 +69,7 @@ class ProfileServiceUnitTest {
 		profile.setOwner(user);
 		when(profileRepository.save(profile)).thenReturn(profile);
         profileService.registerProfile(user);
-        verify(profileRepository).save(profile);
+        verify(profileRepository).save(any(Profile.class));
 	}
 	
 	@Test
@@ -695,6 +698,135 @@ class ProfileServiceUnitTest {
             e.printStackTrace();
             return;
         }
+	}
+	
+	@Test
+	public void updatePhotosUserNoProfile() {
+		User user = new User(0,"","test@email.com","test","test");
+		Profile profile = new Profile(0, "", "", "", "", "", "", "", "", "", "", "", "", "", user);
+		when(userService.findByCredentials(user.getEmail(),user.getPassword())).thenReturn(Optional.of(user));
+		try {
+			when(profileService.getProfileByUser(user)).thenReturn(profile);
+			profileService.updatePhotos(imageUrlDTO, user);
+			verify(profileRepository).save(profile);
+        } 
+		catch (ProfileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+		catch (UserNotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+	}
+	
+	@Test
+	public void updatePhotosUserNotFound() {
+		User user = new User(0,"","","","");
+		when(userService.findByCredentials("","")).thenReturn(Optional.empty());
+		try {
+			profileService.updatePhotos(imageUrlDTO, user);
+			fail();
+        } 
+		catch (ProfileNotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+		catch (UserNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+	}
+	
+	@Test
+	public void removePhotosUserNoProfile() {
+		User user = new User(0,"","test@email.com","test","test");
+		Profile profile = new Profile(0, "", "", "", "", "", "", "", "", "", "", "", "", "", user);
+		when(userService.findByCredentials(user.getEmail(),user.getPassword())).thenReturn(Optional.of(user));
+		try {
+			when(profileService.getProfileByUser(user)).thenReturn(profile);
+			profileService.removePhoto(imageUrlDTO, user);
+			verify(profileRepository).save(profile);
+        } 
+		catch (ProfileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+		catch (UserNotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+		catch (ImageNotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+	}
+	
+	@Test
+	public void removePhotosUserNotFound() {
+		User user = new User(0,"","","","");
+		when(userService.findByCredentials("","")).thenReturn(Optional.empty());
+		try {
+			profileService.removePhoto(imageUrlDTO, user);
+			fail();
+        } 
+		catch (ProfileNotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+		catch (UserNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+		catch (ImageNotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+	}
+	
+	@Test
+	public void getAllProfilesByIdsReturns() {
+		String list = "0,1";
+		try{
+			assertNotNull(profileService.getAllProfilesByIds(list));
+		} catch(WrongIdsFormatException e) {
+			 e.printStackTrace();
+	         fail();
+		}
+	}
+	
+	@Test
+	public void getAllProfilesByIdsWrongFormat() {
+		String list = "0, 1";
+		try{
+			assertNotNull(profileService.getAllProfilesByIds(list));
+			fail();
+		} catch(WrongIdsFormatException e) {
+			 e.printStackTrace();
+	         return;
+		}
+	}
+	
+	@Test
+	public void getAllProfilesByIdsReturnsLimit() {
+		String list = "0,1";
+		try{
+			assertNotNull(profileService.getAllProfilesByIds(list, 2));
+		} catch(WrongIdsFormatException e) {
+			 e.printStackTrace();
+	         fail();
+		}
+	}
+	
+	@Test
+	public void getAllProfilesByIdsReturnsLimitShuffled() {
+		String list = "0,1";
+		try{
+			assertNotNull(profileService.getAllProfilesByIds(list, 2, true));
+		} catch(WrongIdsFormatException e) {
+			 e.printStackTrace();
+	         fail();
+		}
 	}
 	
 }

@@ -1,6 +1,7 @@
 package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.revature.models.Comment;
 import com.revature.models.Post;
+import com.revature.models.Profile;
 import com.revature.models.User;
 import com.revature.repositories.CommentRepository;
 import com.revature.repositories.PostRepository;
@@ -63,16 +65,7 @@ public class PostServiceUnitTest {
         postService.getAllSorted();
         verify(postRepository).findAll();
     }
-    
-    @Test
-    @Disabled
-    public void upsertCommentCallsRepositorySave(){
-        Comment comment = mock(Comment.class);
-        when(commentRepository.save(comment)).thenReturn(comment);
-        postService.upsertComment(comment);
-        verify(commentRepository).save(comment);
-    }
-    
+        
     @Test
     public void userPostsCallsRepositoryFindAllByAuthor(){
     	User user = mock(User.class);
@@ -80,4 +73,6 @@ public class PostServiceUnitTest {
         postService.userPosts(user);
         verify(postRepository).findAllByAuthor(user);
     }
+    
+    
 }
