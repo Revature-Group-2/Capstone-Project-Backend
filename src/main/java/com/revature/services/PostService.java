@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import com.revature.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,7 @@ import com.revature.models.Comment;
 import com.revature.models.Post;
 import com.revature.models.Profile;
 import com.revature.models.User;
-import com.revature.repositories.CommentRepository;
-import com.revature.repositories.PostRepository;
-import com.revature.repositories.ProfileRepository;
-import com.revature.repositories.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostService {
@@ -32,10 +30,13 @@ public class PostService {
 
 	@Autowired
 	private UserService usersService;
+	private final VoteRepository voteRepository;
 
-	
-	public PostService(PostRepository postRepository) {
+
+	public PostService(PostRepository postRepository,
+					   VoteRepository voteRepository) {
 		this.postRepository = postRepository;
+		this.voteRepository = voteRepository;
 	}
 
 	public List<Post> getAll() {
@@ -62,7 +63,11 @@ public class PostService {
 		return this.postRepository.findAllByAuthor(user);
 	}
 
-	public void delete(int id) { postRepository.deleteById(id); }
+	@Transactional
+	public void delete(int id) {
+		voteRepository.deleteByPost(postRepository.findById(id).get());
+		postRepository.deleteById(id);
+	}
 
 	public List<Post> getAllSubscribedPosts(User sessionUser) throws UserNotFoundException, ProfileNotFoundException {
 		List<Post> posts = new LinkedList<>();
